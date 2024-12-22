@@ -16,6 +16,23 @@ let users = [
 
 // Endpoint para obtener todas las tareas
 app.get("/task", (req, res) => {
+    // Recupera el parámetro 'text' desde la query string
+    let text = req.query.text;
+
+    // Si se proporciona un texto, filtra las tareas
+    if (text !== undefined) {
+        let tasksWithText = tasks.filter((task) => task.text.indexOf(text) !== -1);
+
+        // Si no se encuentran tareas que coincidan, responde con un mensaje claro
+        if (tasksWithText.length === 0) {
+            return res.status(404).send({ error: "No se encontraron tareas que coincidan con el texto proporcionado." });
+        }
+
+        // Devuelve las tareas que coincidan con el texto
+        return res.send(tasksWithText);
+    }
+
+    // Si no se proporciona texto, devuelve todas las tareas
     res.send(tasks);
 });
 
@@ -31,6 +48,19 @@ app.get("/task/:id", (req, res) => {
 
 // Endpoint para obtener todos los usuarios
 app.get("/user", (req, res) => {
+    // Recupera el parámetro 'email' desde la query string
+    let email = req.query.email;
+    // Si se proporciona un email, filtra los usuarios
+    if (email !== undefined) {
+        let usersWithEmail = users.filter((user) => user.email === email);
+        // Si no se encuentra ningún usuario con el email dado, responde con un mensaje claro
+        if (usersWithEmail.length === 0) {
+            return res.status(404).send({ error: "Usuario no encontrado con el email proporcionado" });
+        }
+        // Devuelve los usuarios encontrados con el email
+        return res.send(usersWithEmail);
+    }
+    // Si no se proporciona email, devuelve todos los usuarios
     res.send(users);
 });
 
